@@ -1,0 +1,41 @@
+.Home {
+    display: flex;
+    flex-flow: row;
+    height: 100vh;
+    padding: 0px;
+    margin: 0px;
+}
+
+.desktop_responsive {
+    width: 30%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    border-right: 1px solid #ccc;
+}
+
+.sideBar {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: 100%;
+    /* background-color: #ccc; */
+}
+
+.content {
+    width: 70%;
+    height: 100%;
+    /* border: 1px solid black; */
+    /* background-color: #ffc107; */
+}
+
+@media  (max-width: 900px) {
+    .desktop_responsive {
+        display: none;
+    }
+
+    .content {
+        width: 100%;
+    }
+}
