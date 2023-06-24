@@ -4,6 +4,7 @@ import { AuthContext } from "../../../Context/AuthContext";
 
 const ChatItem = (props) => {
     const auth = useContext(AuthContext);
+    let [typingEffect, setTypingEffct] = useState(false);
     let [lastMessage, setLastMessage] = useState('');
     let [room, setRoom] = useState([]);
 
@@ -26,6 +27,17 @@ const ChatItem = (props) => {
         }
     }, [props.recievedMessage])
 
+    // Rendering other user typing effect | Socket.io
+    useEffect(() => {
+        // check if the effect meant to (this chat room)
+        if(props.otherUserTyping?.to === auth.user._id && room?._id === props.otherUserTyping?.room){
+            setTypingEffct(true);
+            setTimeout(() => {
+                setTypingEffct(false);
+            }, 3000)
+        }
+    }, [props.otherUserTyping])
+
     // change (Rerendering) room lastMessage when a message is made by authUser | Socket.io
     useEffect(() => {
         // check if the message was made by (this user) and belong to (this chat room)
@@ -38,13 +50,19 @@ const ChatItem = (props) => {
     // setting (room lastMessage) at fisrt render from database
     useEffect(() => {
         let r = props.user.rooms.find(room => room.creators.toString() === [auth.user._id, props.user._id].toString() || room.creators.toString() === [props.user._id, auth.user._id].toString());
+        let lastM = lastMessageViewHandler(r?.lastMessage?.text, r?.lastMessage?.to);
         setRoom(r);
-        let lastM = lastMessageViewHandler(r.lastMessage?.text, r.lastMessage?.to);
         setLastMessage(lastM);
-    }, [])
+    }, [props.user])
+    // dependant update on the (users) after they've been updated due to (DBroomData) chat clicked
+    // so the room_id can be fetched trom backend
+
+    const typing = (
+        <div className={style.typingEffictSideBar}>typing...</div>
+    )
 
     return (
-        <div className={style.ChatItem} onClick={props.onClick}>
+        <div className={props.user.searchVisibility ? style.ChatItem : `${style.ChatItem} ${style.hide}`} onClick={props.onClick}>
             <div className={style.ImageSide}>
                 <div>
                     <img src={props.user.imagePath}/>
@@ -53,7 +71,7 @@ const ChatItem = (props) => {
             </div>
             <div className={style.InfoSide}>
                 <div className={style.Name}>{props.user.name}</div>
-                <div className={style.Message}>{lastMessage}</div>
+                <div className={style.Message}>{typingEffect ? typing : lastMessage}</div>
             </div>
         </div>
     )

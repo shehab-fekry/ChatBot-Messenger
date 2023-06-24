@@ -19,6 +19,10 @@ io.on('connection', socket => {
     socket.on('send-status', status => {
         socket.broadcast.emit('recieve-status', status)
     })
+
+    socket.on('send-typingEffect', effect => {
+        socket.broadcast.emit('recieve-typingEffect', effect)
+    })
 })
 
 app.use(bodyParser.json());

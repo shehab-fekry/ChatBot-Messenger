@@ -13,10 +13,12 @@ const SideBar = (props) => {
                 transform: props.toggle ? 'translateX(0px)' : 'translateX(-100%)',
 
             }}>
-                <UserInfo/>
+                <UserInfo logOutHandler={props.logOutHandler}/>
                 <ChatList 
                 fetchRoomData={props.fetchRoomData}
+                DBroomData={props.DBroomData}
                 otherUserStatus={props.otherUserStatus}
+                otherUserTyping={props.otherUserTyping}
                 recievedMessage={props.recievedMessage}
                 authUserMessage={props.authUserMessage}
                 toggleHandler={props.toggleHandler}/>

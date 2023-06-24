@@ -77,3 +77,15 @@
     white-space: nowrap;
     /* border: 1px solid black; */
 }
+
+.hide {
+    display: none;
+}
+
+
+.typingEffictSideBar {
+    color: #333;
+    font-weight: 700;
+    /* border: 1px solid #333; */
+    /* background-color: #ccc; */
+}

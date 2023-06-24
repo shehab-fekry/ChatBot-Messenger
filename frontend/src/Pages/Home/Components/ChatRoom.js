@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import style from './ChatRoom.module.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane, faBars } from "@fortawesome/free-solid-svg-icons";
 
 import Message from './Message';
 import { AuthContext } from "../../../Context/AuthContext";
@@ -11,6 +13,8 @@ const ChatRoom = (props) => {
     let [newMessage, setNewMessage] = useState('');
     let [User, setUser] = useState({});
     let [Messages, setMessages] = useState([]);
+    let [typingCounter, setTypingCounter] = useState(1);
+    let [typingEffect, setTypingEffct] = useState(false); 
 
 
     // Change (Rerendering) other users chat messages when a message is recieved | Socket.io
@@ -22,6 +26,17 @@ const ChatRoom = (props) => {
             setMessages(updatedMessages);
         }
     }, [props.recievedMessage])
+
+    // Rendering other user typing effect | Socket.io
+    useEffect(() => {
+        // check if the effect meant to (this chat room)
+        if(props.DBroomData.room._id === props.otherUserTyping.room){
+            setTypingEffct(true);
+            setTimeout(() => {
+                setTypingEffct(false);
+            }, 2500)
+        }
+    }, [props.otherUserTyping])
 
     // Change (Rerendering) other users status when thay take actions (login/logout) | Socket.io
     useEffect(() => {
@@ -41,6 +56,18 @@ const ChatRoom = (props) => {
 
     const inputChangeHandler = (event) => {
         let inputValue = event.target.value;
+        let tc = typingCounter;
+        let typing = {
+            creatorID: auth.user._id,
+            to: User._id,
+            room: props.DBroomData.room._id,
+        }
+        tc = tc % 3;
+        tc = tc + 1;
+        if(tc === 1)
+        socket.emit('send-typingEffect', typing);
+
+        setTypingCounter(tc);
         setNewMessage(inputValue)
     }
 
@@ -70,18 +97,27 @@ const ChatRoom = (props) => {
         .catch(err => console.log(err))
     }
 
-
     return (
         <div className={style.ChatRoom}>
             <div className={style.ChatHeader}>
                 <div className={style.User}>
                     <div className={style.ImageSide}><img src={User.imagePath}/></div>
                     <div className={style.InfoSide}>
-                        <div className={style.Name}>{User.name}</div>
-                        <div className={style.Status}>{User.status ? 'Online' : 'Offline'}</div> 
+                        <div className={style.Name} style={{
+                            marginTop: User.status ? null : '15px',
+                        }}>{User.name}</div>
+                        
+                        <div className={style.Status} style={{
+                            opacity: User.status ? 1 : 0,
+                        }}>{User.status ? 'Online' : null}</div>
+                        
                     </div>
                 </div>
-                <div className={style.toggleButton} onClick={props.toggleHandler}></div>
+                <div className={style.toggleButton}>
+                <FontAwesomeIcon icon={faBars} 
+                style={{fontSize: '35px', cursor: 'pointer', color: '#333'}}
+                onClick={props.toggleHandler}/>
+                </div>
             </div>
             
             <div id="ChatRoom" className={style.ReadingSide}>
@@ -92,6 +128,11 @@ const ChatRoom = (props) => {
                     auth={auth.user._id}/>
                 })}
             </div>
+            
+            <div className={style.typingEffict} 
+            style={{
+                display: typingEffect ? 'block' : 'none',
+            }}>typing...</div>
             
             <div className={style.WritingSide}>
                 <div className={style.ToolContainer}></div>
@@ -104,7 +145,10 @@ const ChatRoom = (props) => {
                         onChange={(e) => inputChangeHandler(e)}/>
                     </div>
                     <div className={style.ButtonSide}>
-                        <button onClick={() => sendMessageHandler(props.DBroomData.room._id)}>Send</button>
+                        <FontAwesomeIcon 
+                        icon={faPaperPlane}
+                        style={{fontSize: '30px', color: '#333', cursor: 'pointer'}}
+                        onClick={() => sendMessageHandler(props.DBroomData.room._id)}/>
                     </div>
                 </div>
             </div>

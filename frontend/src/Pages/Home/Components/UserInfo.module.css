@@ -33,3 +33,19 @@
     margin-top: -5px;
     /* border: 1px solid black; */
 }
+
+.menuBar{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 27px;
+    height: 27px;
+    margin-left: 85px;
+    /* margin-top: 50px; */
+    /* padding: 5px 10px; */
+    border-radius: 50%;
+    cursor: pointer;  
+    border: 1px solid #ccc;
+    background-color: white;
+}

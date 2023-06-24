@@ -8,6 +8,7 @@ import ChatItem from './ChatItem';
 const ChatList = (props) => {
     const auth = useContext(AuthContext);
     let [users, setUsers] = useState([]);
+    let [refresh, setRefresh] = useState(0);
 
     // getting all chat rooms 
     useEffect(() => {
@@ -15,11 +16,16 @@ const ChatList = (props) => {
         .then(data => {
             let users = data.data.users;
             users = users.filter(user => user._id !== auth.user._id);
+            users.forEach(user => user.searchVisibility = true)
             setUsers([...users])
             console.log(users)
         })
         .catch(err => console.log(err))
-    }, []);
+    }, [props.DBroomData]); 
+    // when a chat from users list is clicked, the list should update 
+    // so the created room (onclick) appears in that user (rooms) array
+    // so the chatitem component of that specific user can use the (room._id)
+    // for (useEffect) inner conditions 
 
     // change (Rerendering) other users status when thay take actions (login - logout) | Socket.io
     useEffect(() => {
@@ -46,10 +52,21 @@ const ChatList = (props) => {
         }
     }
 
+    const searchHandler = (event) => {
+        let value = event.target.value;
+        let isVisible = false;
+        let updatedUsers = [...users]
+        updatedUsers.forEach(user => {
+            isVisible = user.name.includes(value) ? true : false;
+            user.searchVisibility = isVisible;
+        })
+        setUsers(updatedUsers)
+    }
+
     return (
         <div className={style.Container}>
             <div className={style.ListHeader}>
-                <div className={style.search}><input type="text" placeholder="Search"/></div>
+                <div className={style.search}><input type="text" placeholder="Search" onInput={(e) => searchHandler(e)}/></div>
                 <div className={style.title}>Chats</div>
             </div>
             <div className={style.ChatList}>
@@ -58,8 +75,10 @@ const ChatList = (props) => {
                     return <ChatItem
                     key={index}
                     user={user}
+                    DBroomData={props.DBroomData}
                     recievedMessage={props.recievedMessage}
                     authUserMessage={props.authUserMessage}
+                    otherUserTyping={props.otherUserTyping}
                     onClick={() => clickHandler(user._id)}/>
                 })
                 }
