@@ -71,18 +71,19 @@ const ChatRoom = (props) => {
         setNewMessage(inputValue)
     }
 
-    const sendMessageHandler = (roomID) => {
+    const sendMessageHandler = () => {
         if(newMessage === '') return 
         let time = new Date().toLocaleTimeString();
         let xm = time.split(' ')[1];
         let hours = time.split(' ')[0].split(':')[0];
         let minutes = time.split(' ')[0].split(':')[1];
+        let audio = new Audio('/audio/mixkit-long-pop.wav');
         let message = {
             creatorID: auth.user._id,
             to: User._id,
             text: newMessage,
             time: hours + ':' + minutes + ' ' + xm,
-            room: roomID,
+            room: props.DBroomData.room._id,
         }
         
         setNewMessage('');
@@ -93,9 +94,18 @@ const ChatRoom = (props) => {
             let updatedMessages = [...Messages];
             updatedMessages.unshift(message);
             setMessages([...updatedMessages]);
+            audio.play();
         })
         .catch(err => console.log(err))
     }
+
+    let placeholder = (
+        <div className={style.placeholder}>
+            <img src="/images/Messaging.svg" width='200px' height='200px'/>
+            <h4>Start A Conversation!</h4>
+        </div>
+    )
+
 
     return (
         <div className={style.ChatRoom}>
@@ -121,12 +131,13 @@ const ChatRoom = (props) => {
             </div>
             
             <div id="ChatRoom" className={style.ReadingSide}>
-                {Messages.map((message, index) => {
+                {Messages?.map((message, index) => {
                     return <Message
                     key={index}
                     message={message} 
                     auth={auth.user._id}/>
                 })}
+                {Messages.length === 0 ? placeholder : null}
             </div>
             
             <div className={style.typingEffict} 
@@ -145,10 +156,11 @@ const ChatRoom = (props) => {
                         onChange={(e) => inputChangeHandler(e)}/>
                     </div>
                     <div className={style.ButtonSide}>
-                        <FontAwesomeIcon 
-                        icon={faPaperPlane}
-                        style={{fontSize: '30px', color: '#333', cursor: 'pointer'}}
-                        onClick={() => sendMessageHandler(props.DBroomData.room._id)}/>
+                        <div className={style.buttonBackground} onClick={sendMessageHandler}>
+                            <FontAwesomeIcon 
+                            icon={faPaperPlane}
+                            style={{fontSize: '23px', color: '#fff', marginLeft: '-4px'}}/>
+                        </div>
                     </div>
                 </div>
             </div>

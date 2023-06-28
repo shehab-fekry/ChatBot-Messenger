@@ -8,7 +8,6 @@ import ChatItem from './ChatItem';
 const ChatList = (props) => {
     const auth = useContext(AuthContext);
     let [users, setUsers] = useState([]);
-    let [refresh, setRefresh] = useState(0);
 
     // getting all chat rooms 
     useEffect(() => {
@@ -21,9 +20,9 @@ const ChatList = (props) => {
             console.log(users)
         })
         .catch(err => console.log(err))
-    }, [props.DBroomData]); 
-    // when a chat from users list is clicked, the list should update 
-    // so the created room (onclick) appears in that user (rooms) array
+    }, [props.DBroomData, props.newRoomCreation]); 
+    // when a chat from users list is clicked, the list should update its data from
+    // the database so the created room (onclick) appears in that user (rooms) array
     // so the chatitem component of that specific user can use the (room._id)
     // for (useEffect) inner conditions 
 
@@ -57,7 +56,7 @@ const ChatList = (props) => {
         let isVisible = false;
         let updatedUsers = [...users]
         updatedUsers.forEach(user => {
-            isVisible = user.name.includes(value) ? true : false;
+            isVisible = user.name.includes(value) || user.name.includes(value.toUpperCase()) ? true : false;
             user.searchVisibility = isVisible;
         })
         setUsers(updatedUsers)

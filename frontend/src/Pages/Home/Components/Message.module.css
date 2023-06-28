@@ -6,15 +6,14 @@
     margin: 3px 10px;
     border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
-    background-color: #384850;
     color: white;
-    box-shadow: 0px 0px 5px #ccc;
+    box-shadow: 0px 0px 3px #ccc;
     /* border: 1px solid black; */
 }
 
-.MessageText {
-    /* border: 1px solid black; */
-}
+/* .MessageText {
+    border: 1px solid black;
+} */
 
 .MessageStatus {
     margin-top: 5px;

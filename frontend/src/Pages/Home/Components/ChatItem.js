@@ -4,9 +4,10 @@ import { AuthContext } from "../../../Context/AuthContext";
 
 const ChatItem = (props) => {
     const auth = useContext(AuthContext);
-    let [typingEffect, setTypingEffct] = useState(false);
-    let [lastMessage, setLastMessage] = useState('');
     let [room, setRoom] = useState([]);
+    let [lastMessage, setLastMessage] = useState('');
+    let [typingEffect, setTypingEffct] = useState(false);
+    let [notifyCounter, setNotifyCounter] = useState(0);
 
     const lastMessageViewHandler = (text, to) => {
         let message = 'Joined Recently!';
@@ -18,12 +19,19 @@ const ChatItem = (props) => {
         return message;
     }
 
+    const notifyCounterHandler = () => {
+        setNotifyCounter(0);
+        props.onClick();
+    }
+
     // change (Rerendering) room lastMessage when a message is recieved | Socket.io
     useEffect(() => {
         // check if the message was sent to (this user) and belong to (this chat room)
         if(props.recievedMessage?.to === auth.user._id && room?._id === props.recievedMessage?.room){
             let lastM = lastMessageViewHandler(props.recievedMessage?.text, props.recievedMessage?.to);
             setLastMessage(lastM);
+            if(props.DBroomData?.room._id !== props.recievedMessage?.room)
+            setNotifyCounter(notifyCounter + 1);
         }
     }, [props.recievedMessage])
 
@@ -34,7 +42,7 @@ const ChatItem = (props) => {
             setTypingEffct(true);
             setTimeout(() => {
                 setTypingEffct(false);
-            }, 3000)
+            }, 2500)
         }
     }, [props.otherUserTyping])
 
@@ -62,7 +70,8 @@ const ChatItem = (props) => {
     )
 
     return (
-        <div className={props.user.searchVisibility ? style.ChatItem : `${style.ChatItem} ${style.hide}`} onClick={props.onClick}>
+        <div className={props.user.searchVisibility ? style.ChatItem : `${style.ChatItem} ${style.hide}`} onClick={notifyCounterHandler}>
+            {notifyCounter !== 0 ? <div className={style.counter}>{notifyCounter}</div> : null}
             <div className={style.ImageSide}>
                 <div>
                     <img src={props.user.imagePath}/>

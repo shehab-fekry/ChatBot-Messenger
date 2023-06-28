@@ -16,6 +16,7 @@ const Home = () => {
     let [recievedMessage, setRecievedMessage] = useState({});
     let [otherUserTyping, setOtherUserTyping] = useState({});
     let [authUserMessage, setAuthUserMessage] = useState({});
+    let [newRoomCreation, setNewRoomCreation] = useState({});
 
     // announcement of current user status (isActive) when signin
     useEffect(() => {
@@ -32,19 +33,29 @@ const Home = () => {
         // check if the message meant to (this user)
         if(message.to !== auth.user._id) return 
         setRecievedMessage(message)
+        new Audio('/audio/bubble-popup-notification.wav').play()
+    })
+
+    // recieve other users room creation event
+    socket.on('recieve-room-creation', event => {
+        // check if the event meant to (this user)
+        if(event.to !== auth.user._id) return
+        setNewRoomCreation(event.from)
+        console.log(event.from)
+        
     })
 
     // recieve other users typingEffect
     socket.on('recieve-typingEffect', effect => {
         // check if the effect meant to (this user)
         if(effect.to !== auth.user._id) return 
-        console.log(effect)
         setOtherUserTyping(effect)
     })
     
     // announcement of current user status (notActive) when signout
     const preLogOut = useCallback(() => {
         socket.emit('send-status', {userID: auth.user._id, status: false});
+        // socket.disconnect()
         auth.logout()
     })
 
@@ -60,7 +71,17 @@ const Home = () => {
         setRoomData({...data});
     })
 
-    let content = null;
+    let content = (
+       <div className={style.splash}>
+         <h3 className={style.welcomeHeader}>Welcome To <span>ChatBot</span>!</h3>
+         <img src='/images/Android.svg' width='200px' height='200px'/>
+         <p className={style.welcomeMessage}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+            sed do <br/> eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+         <button className={style.startButton} onClick={toggleHandler}>Get Started</button>
+       </div>
+    );
     if(DBroomData)
     content = (
         <ChatRoom 
@@ -84,7 +105,8 @@ const Home = () => {
                     otherUserStatus={otherUserStatus}
                     recievedMessage={recievedMessage}
                     otherUserTyping={otherUserTyping}
-                    authUserMessage={authUserMessage}/>
+                    authUserMessage={authUserMessage}
+                    newRoomCreation={newRoomCreation}/>
                 </div>
             </div>
             <div className={style.content}>
@@ -99,7 +121,8 @@ const Home = () => {
             otherUserStatus={otherUserStatus}
             otherUserTyping={otherUserTyping}
             recievedMessage={recievedMessage}
-            authUserMessage={authUserMessage}/>
+            authUserMessage={authUserMessage}
+            newRoomCreation={newRoomCreation}/>
         </div>
     )
 }

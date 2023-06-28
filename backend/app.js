@@ -5,26 +5,16 @@ let cors = require('cors')
 
 const AuthRoutes = require('./Routes/AuthRoutes');
 const ChatRoutes = require('./Routes/ChatRoutes');
+const SocketClass = require('./SocketService/SocketService');
 
 // integrating (express.js) and (socket.io) into server connection 
 let app = express();
 let server = require('http').createServer(app);
-let io = require('socket.io')(server, {cors: {origin: '*'}});
-io.on('connection', socket => {
-    socket.on('send-message', message => {
-        // socket.emit(`${message.to}`, message)
-        socket.broadcast.emit('recieve-message', message)
-    })
 
-    socket.on('send-status', status => {
-        socket.broadcast.emit('recieve-status', status)
-    })
-
-    socket.on('send-typingEffect', effect => {
-        socket.broadcast.emit('recieve-typingEffect', effect)
-    })
-})
-
+// initializing socket.io + set it in app
+// so it can be used in the application routes with: app.get()
+// check ChatRoutes.js line 32 
+app.set("socketService", new SocketClass(server)); 
 app.use(bodyParser.json());
 app.use(cors());
 

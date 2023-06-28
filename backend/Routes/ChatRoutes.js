@@ -14,7 +14,7 @@ app.get('/UsersList', (req, res, next) => {
             res.json({message: 'No users found'});
         }
     })
-    .catch()
+    .catch(err => console.log(err))
 })
 
 
@@ -25,7 +25,12 @@ const createNewRoom = (users, filter) => {
     users[1].rooms.push(newRoom._id);
     users[0].save();
     users[1].save();
-    newRoom.save();
+    newRoom.save()
+    .then(result => {
+        console.log()
+        app.get("socketService").emiter('recieve-room-creation', {to: filter[0], from: filter[1]});
+    })
+    .catch(err => console.log(err)); 
     return newRoom;
 }
 
@@ -39,7 +44,6 @@ app.get('/Rooms/:userID/:authUserID', (req, res, next) => {
 
     Users.find({_id: {$in: filter}})
     .then(users => {
-        let data = {};
         data.user = users[0]._id.toString() === authUserID ? users[1] : users[0];
 
         // if user has rooms

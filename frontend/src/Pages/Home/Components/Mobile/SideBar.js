@@ -21,6 +21,7 @@ const SideBar = (props) => {
                 otherUserTyping={props.otherUserTyping}
                 recievedMessage={props.recievedMessage}
                 authUserMessage={props.authUserMessage}
+                newRoomCreation={props.newRoomCreation}
                 toggleHandler={props.toggleHandler}/>
             </div>
             {/* BackDrop */}
