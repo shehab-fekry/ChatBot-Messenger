@@ -4,6 +4,7 @@ import style from './ChatList.module.css';
 
 import { AuthContext } from "../../../Context/AuthContext";
 import ChatItem from './ChatItem';
+import { counter } from "@fortawesome/fontawesome-svg-core";
  
 const ChatList = (props) => {
     const auth = useContext(AuthContext);
@@ -15,7 +16,10 @@ const ChatList = (props) => {
         .then(data => {
             let users = data.data.users;
             users = users.filter(user => user._id !== auth.user._id);
-            users.forEach(user => user.searchVisibility = true)
+            users.forEach(user => {
+                user.searchVisibility = true;
+                user.notifications = [];
+            })
             setUsers([...users])
             console.log(users)
         })
@@ -62,6 +66,19 @@ const ChatList = (props) => {
         setUsers(updatedUsers)
     }
 
+    const notificationHandler = (action, userID) => {
+        let updatedUsers = [...users];
+
+        updatedUsers.forEach(user => {
+            if(user._id === userID && action === 'reset')
+            user.notifications = [];
+            else if(user._id === userID && action === 'inc')
+            user.notifications.push({userID});
+        })
+
+        setUsers(updatedUsers);
+    }
+
     return (
         <div className={style.Container}>
             <div className={style.ListHeader}>
@@ -78,6 +95,7 @@ const ChatList = (props) => {
                     recievedMessage={props.recievedMessage}
                     authUserMessage={props.authUserMessage}
                     otherUserTyping={props.otherUserTyping}
+                    notificationHandler={notificationHandler}
                     onClick={() => clickHandler(user._id)}/>
                 })
                 }

@@ -33,7 +33,6 @@ const Home = () => {
         // check if the message meant to (this user)
         if(message.to !== auth.user._id) return 
         setRecievedMessage(message)
-        new Audio('/audio/bubble-popup-notification.wav').play()
     })
 
     // recieve other users room creation event
@@ -55,7 +54,6 @@ const Home = () => {
     // announcement of current user status (notActive) when signout
     const preLogOut = useCallback(() => {
         socket.emit('send-status', {userID: auth.user._id, status: false});
-        // socket.disconnect()
         auth.logout()
     })
 
@@ -70,6 +68,7 @@ const Home = () => {
     const fetchRoomData = useCallback((data) => {
         setRoomData({...data});
     })
+
 
     let content = (
        <div className={style.splash}>

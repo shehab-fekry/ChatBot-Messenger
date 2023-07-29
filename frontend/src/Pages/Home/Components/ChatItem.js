@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import style from './ChatItem.module.css';
+
 import { AuthContext } from "../../../Context/AuthContext";
 
 const ChatItem = (props) => {
@@ -7,7 +8,6 @@ const ChatItem = (props) => {
     let [room, setRoom] = useState([]);
     let [lastMessage, setLastMessage] = useState('');
     let [typingEffect, setTypingEffct] = useState(false);
-    let [notifyCounter, setNotifyCounter] = useState(0);
 
     const lastMessageViewHandler = (text, to) => {
         let message = 'Joined Recently!';
@@ -16,11 +16,18 @@ const ChatItem = (props) => {
         else if(to !== auth.user._id && !!text)
         message = `You: ${text}`;
 
+        if(message === 'Joined Recently!')
+        return message;
+        else if(message.length > 12 && ((window.innerWidth || document.documentElement.clientWidth) <= 900))
+        message = message.slice(0, 12) + '...';
+        else 
+        message = message.slice(0, 25) + '...';
+        
         return message;
     }
 
-    const notifyCounterHandler = () => {
-        setNotifyCounter(0);
+    const clickActionsHandler = () => {
+        props.notificationHandler('reset', props.user._id);
         props.onClick();
     }
 
@@ -30,8 +37,10 @@ const ChatItem = (props) => {
         if(props.recievedMessage?.to === auth.user._id && room?._id === props.recievedMessage?.room){
             let lastM = lastMessageViewHandler(props.recievedMessage?.text, props.recievedMessage?.to);
             setLastMessage(lastM);
+
+            // prevent notification when the chatroom of recieved message is already opened
             if(props.DBroomData?.room._id !== props.recievedMessage?.room)
-            setNotifyCounter(notifyCounter + 1);
+            props.notificationHandler('inc', props.recievedMessage.creatorID);
         }
     }, [props.recievedMessage])
 
@@ -63,15 +72,26 @@ const ChatItem = (props) => {
         setLastMessage(lastM);
     }, [props.user])
     // dependant update on the (users) after they've been updated due to (DBroomData) chat clicked
-    // so the room_id can be fetched trom backend
+    // so the room_id can be fetched from backend
+
+
+    // counting notifications of this user
+    let notify = props.user.notifications.filter(notify => notify.userID === props.user._id);
 
     const typing = (
         <div className={style.typingEffictSideBar}>typing...</div>
     )
 
+    const message = (
+        <div className={notify?.length !== 0 ? style.unCheckedMessage : null}>{lastMessage}</div>
+    )
+
     return (
-        <div className={props.user.searchVisibility ? style.ChatItem : `${style.ChatItem} ${style.hide}`} onClick={notifyCounterHandler}>
-            {notifyCounter !== 0 ? <div className={style.counter}>{notifyCounter}</div> : null}
+        <div className={props.user.searchVisibility ? style.ChatItem : `${style.ChatItem} ${style.hide}`} onClick={clickActionsHandler}>
+            
+            {/* count circle */}
+            {notify?.length !== 0 ? <div className={style.counter}>{notify?.length}</div> : null}
+
             <div className={style.ImageSide}>
                 <div>
                     <img src={props.user.imagePath}/>
@@ -80,7 +100,7 @@ const ChatItem = (props) => {
             </div>
             <div className={style.InfoSide}>
                 <div className={style.Name}>{props.user.name}</div>
-                <div className={style.Message}>{typingEffect ? typing : lastMessage}</div>
+                <div className={style.Message}>{typingEffect ? typing : message}</div>
             </div>
         </div>
     )

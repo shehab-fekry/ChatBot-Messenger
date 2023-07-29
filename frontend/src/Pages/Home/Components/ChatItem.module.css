@@ -109,3 +109,9 @@
     background-color: #ffc107;
     color: white;
 }
+
+
+.unCheckedMessage {
+    color: #333;
+    font-weight: 700;
+}

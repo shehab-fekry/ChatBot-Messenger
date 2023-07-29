@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
-import style from './ChatRoom.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faBars } from "@fortawesome/free-solid-svg-icons";
+import style from './ChatRoom.module.css';
 
 import Message from './Message';
 import { AuthContext } from "../../../Context/AuthContext";
@@ -24,6 +24,8 @@ const ChatRoom = (props) => {
             let updatedMessages = [...Messages];
             updatedMessages.unshift(props.recievedMessage);
             setMessages(updatedMessages);
+            // let a = new Audio('/audio/recieve-message.mp3');
+            // a.play()
         }
     }, [props.recievedMessage])
 
@@ -157,7 +159,7 @@ const ChatRoom = (props) => {
                     </div>
                     <div className={style.ButtonSide}>
                         <div className={style.buttonBackground} onClick={sendMessageHandler}>
-                            <FontAwesomeIcon 
+                            <FontAwesomeIcon
                             icon={faPaperPlane}
                             style={{fontSize: '23px', color: '#fff', marginLeft: '-4px'}}/>
                         </div>
