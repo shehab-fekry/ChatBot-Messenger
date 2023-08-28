@@ -22,6 +22,17 @@ const Users = new Schema({
         type: Array,
         ref: 'Rooms',
     },
+    notifications: {
+        type: Array,
+        required: true,
+    },
+    searchVisibility: {
+        type: Boolean,
+        default: true,
+    },
+    lastContactWith: {
+        type: String,
+    },
     status: {
         type: Boolean,
     }

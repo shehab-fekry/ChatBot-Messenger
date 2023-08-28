@@ -5,6 +5,7 @@ const Users = require('../Models/UsersM');
 
 app.post('/signin', (req, res, next) => {
     let {email, password} = req.body;
+    let loginData = {};
 
     Users.findOne({email: email})
     .then(user => {
@@ -12,8 +13,14 @@ app.post('/signin', (req, res, next) => {
         if(user) {
             token = jwt.sign({email: email}, 'very_secret_key');
             user.status = true;
-            user.save();
-            res.json({user, token});
+            user.save()
+            .then(result => {
+                loginData._id = user._id;
+                loginData.name = user.name;
+                loginData.status = user.status;
+                loginData.imagePath = user.imagePath;
+                res.json({user: loginData, token});
+            });
         } else {
             res.json({message: 'User not found please signup first'})
         }
@@ -42,6 +49,7 @@ app.post('/signout', (req, res, next) => {
     Users.findById({_id: userID})
     .then(user => {
         user.status = false;
+        user.lastContactWith = '';
         user.save();
         res.json({})
     })

@@ -4,7 +4,6 @@ import style from './ChatList.module.css';
 
 import { AuthContext } from "../../../Context/AuthContext";
 import ChatItem from './ChatItem';
-import { counter } from "@fortawesome/fontawesome-svg-core";
  
 const ChatList = (props) => {
     const auth = useContext(AuthContext);
@@ -15,11 +14,8 @@ const ChatList = (props) => {
         axios.get('http://localhost:8000/Chat/UsersList')
         .then(data => {
             let users = data.data.users;
-            users = users.filter(user => user._id !== auth.user._id);
-            users.forEach(user => {
-                user.searchVisibility = true;
-                user.notifications = [];
-            })
+            users = users.filter(user => user._id !== auth.user._id); // remove Auth user from he list
+            
             setUsers([...users])
             console.log(users)
         })
@@ -40,6 +36,17 @@ const ChatList = (props) => {
         setUsers(updatedUsers)
     }, [props.otherUserStatus])
 
+    const searchHandler = (event) => {
+        let value = event.target.value;
+        let isVisible = false;
+        let updatedUsers = [...users]
+        updatedUsers.forEach(user => {
+            isVisible = user.name.includes(value) || user.name.includes(value.toUpperCase()) ? true : false;
+            user.searchVisibility = isVisible;
+        })
+        setUsers(updatedUsers)
+    }
+
     const clickHandler = (userID) => {
         // getting data of a specific room onClick
         axios.get(`http://localhost:8000/Chat/Rooms/${userID}/${auth.user._id}`)
@@ -55,25 +62,15 @@ const ChatList = (props) => {
         }
     }
 
-    const searchHandler = (event) => {
-        let value = event.target.value;
-        let isVisible = false;
-        let updatedUsers = [...users]
-        updatedUsers.forEach(user => {
-            isVisible = user.name.includes(value) || user.name.includes(value.toUpperCase()) ? true : false;
-            user.searchVisibility = isVisible;
-        })
-        setUsers(updatedUsers)
-    }
-
     const notificationHandler = (action, userID) => {
         let updatedUsers = [...users];
 
         updatedUsers.forEach(user => {
-            if(user._id === userID && action === 'reset')
-            user.notifications = [];
-            else if(user._id === userID && action === 'inc')
-            user.notifications.push({userID});
+            // console.log(user.notifications)
+            if(user._id === userID && action === 'reset') // when accessing the room
+            user.notifications = user.notifications.filter(notify => notify.userID !== userID)
+            else if(user._id === userID.creatorID && action === 'inc') // when message recieved
+            user.notifications.push({to: userID.to, from: userID.creatorID});
         })
 
         setUsers(updatedUsers);

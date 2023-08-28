@@ -18,16 +18,20 @@ const ChatItem = (props) => {
 
         if(message === 'Joined Recently!')
         return message;
-        else if(message.length > 12 && ((window.innerWidth || document.documentElement.clientWidth) <= 900))
+        else if((window.innerWidth || document.documentElement.clientWidth) >= 920)
+        message = message.slice(0, 18) + '...';
+        else if((window.innerWidth || document.documentElement.clientWidth) >= 750)
+        message = message.slice(0, 14) + '...';
+        else if((window.innerWidth || document.documentElement.clientWidth) >= 600)
         message = message.slice(0, 12) + '...';
         else 
-        message = message.slice(0, 25) + '...';
+        message = message.slice(0, 10) + '...';
         
         return message;
     }
 
     const clickActionsHandler = () => {
-        props.notificationHandler('reset', props.user._id);
+        // props.notificationHandler('reset', props.user._id);
         props.onClick();
     }
 
@@ -40,7 +44,7 @@ const ChatItem = (props) => {
 
             // prevent notification when the chatroom of recieved message is already opened
             if(props.DBroomData?.room._id !== props.recievedMessage?.room)
-            props.notificationHandler('inc', props.recievedMessage.creatorID);
+            props.notificationHandler('inc', props.recievedMessage);
         }
     }, [props.recievedMessage])
 
@@ -76,7 +80,7 @@ const ChatItem = (props) => {
 
 
     // counting notifications of this user
-    let notify = props.user.notifications.filter(notify => notify.userID === props.user._id);
+    let notify = props.user.notifications.filter(notify => notify.from === props.user._id && notify.to === auth.user._id);
 
     const typing = (
         <div className={style.typingEffictSideBar}>typing...</div>

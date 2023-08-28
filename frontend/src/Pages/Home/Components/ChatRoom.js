@@ -158,7 +158,9 @@ const ChatRoom = (props) => {
                         onChange={(e) => inputChangeHandler(e)}/>
                     </div>
                     <div className={style.ButtonSide}>
-                        <div className={style.buttonBackground} onClick={sendMessageHandler}>
+                        <div className={style.buttonBackground} 
+                        style={{background: newMessage ? '#333' : '#b3b3b3'}} 
+                        onClick={newMessage ? sendMessageHandler : null}>
                             <FontAwesomeIcon
                             icon={faPaperPlane}
                             style={{fontSize: '23px', color: '#fff', marginLeft: '-4px'}}/>

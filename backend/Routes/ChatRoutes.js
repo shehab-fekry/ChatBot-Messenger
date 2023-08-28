@@ -9,7 +9,14 @@ app.get('/UsersList', (req, res, next) => {
     Users.find().populate('rooms')
     .then(users => {
         if(users){
-            res.json({users});
+            let newUsers = [];
+            let updatedUser = {};
+            users.forEach(user => {
+                const {_id, name, imagePath, notifications, rooms, searchVisibility, status} = user;
+                updatedUser = {_id, name, imagePath, notifications, rooms, searchVisibility, status};
+                newUsers.push(updatedUser);
+            })
+            res.json({users: newUsers});
         } else {
             res.json({message: 'No users found'});
         }
@@ -34,6 +41,8 @@ const createNewRoom = (users, filter) => {
     return newRoom;
 }
 
+
+
 // get shared room of two users by their IDs
 app.get('/Rooms/:userID/:authUserID', (req, res, next) => {
     let userID = req.params.userID;
@@ -42,6 +51,22 @@ app.get('/Rooms/:userID/:authUserID', (req, res, next) => {
     let filterReverse = [...filter].reverse();
     let data = {};
 
+    // clear notifications of the visited room
+    Users.findOne({_id: userID})
+    .then(user => {
+        user.notifications = user.notifications.filter(notify => notify.to !== authUserID)
+        user.save();
+    })
+    .catch(err => console.log(err))
+
+    // saving the last person contacted with by AuthUser | needed when adding new message
+    Users.findOne({_id: authUserID})
+    .then(user => {
+        user.lastContactWith = userID;
+        user.save()
+    }).catch(err => console.log(err))
+
+    // get shared room and creating one if no prev contact
     Users.find({_id: {$in: filter}})
     .then(users => {
         data.user = users[0]._id.toString() === authUserID ? users[1] : users[0];
@@ -81,7 +106,26 @@ app.post('/newMessage', (req, res, next) => {
         room.lastMessage = message;
         room.save()
         .then(r => {
-            return res.json({message: 'added successfully'})
+            // Add notifications to the user of room
+            Users.findById({_id: message.creatorID})
+            .then(user => {
+                // get the Auth User
+                Users.findById({_id: message.to})
+                .then(authUser => {
+                    // if user of room wasn't the last contacted by AuthUser
+                    if(authUser.lastContactWith !== user._id.toString()){
+                        user.notifications.push({to: message.to, from: message.creatorID})
+                        user.save()
+                        .then(r => {
+                            return res.json({message: 'added successfully'})
+                        })
+                        .catch(err => console.log(err))
+                    } else {
+                        return res.json({message: 'message neglected'})
+                    }
+                })
+            })
+            .catch(err => console.log(err))
         })
     })
     .catch(err => console.log(err))
