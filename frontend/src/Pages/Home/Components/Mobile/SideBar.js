@@ -22,6 +22,7 @@ const SideBar = (props) => {
                 recievedMessage={props.recievedMessage}
                 authUserMessage={props.authUserMessage}
                 newRoomCreation={props.newRoomCreation}
+                newUserCreation={props.newUserCreation}
                 toggleHandler={props.toggleHandler}/>
             </div>
             {/* BackDrop */}

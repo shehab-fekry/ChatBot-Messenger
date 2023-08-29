@@ -36,6 +36,7 @@ app.post('/signup', (req, res, next) => {
     let user = new Users({name, email, password, imagePath: `https://robohash.org/${name}`});
     user.save()
     .then(() => {
+        app.get("socketService").emiter('recieve-user-creation', true);
         res.json({messsage: 'User Created Successfully'});
     })
     .catch(err => console.log(err))

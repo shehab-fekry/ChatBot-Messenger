@@ -17,6 +17,7 @@ const Home = () => {
     let [otherUserTyping, setOtherUserTyping] = useState({});
     let [authUserMessage, setAuthUserMessage] = useState({});
     let [newRoomCreation, setNewRoomCreation] = useState({});
+    let [newUserCreation, setNewUserCreation] = useState(0);
 
     // announcement of current user status (isActive) when signin
     useEffect(() => {
@@ -42,6 +43,12 @@ const Home = () => {
         setNewRoomCreation(event.from)
         console.log(event.from)
         
+    })
+
+    // recieve user creation event when signup
+    socket.on('recieve-user-creation', created => {
+        if(created)
+        setNewUserCreation(newUserCreation + 1);
     })
 
     // recieve other users typingEffect
@@ -105,7 +112,8 @@ const Home = () => {
                     recievedMessage={recievedMessage}
                     otherUserTyping={otherUserTyping}
                     authUserMessage={authUserMessage}
-                    newRoomCreation={newRoomCreation}/>
+                    newRoomCreation={newRoomCreation}
+                    newUserCreation={newUserCreation}/>
                 </div>
             </div>
             <div className={style.content}>
@@ -121,7 +129,8 @@ const Home = () => {
             otherUserTyping={otherUserTyping}
             recievedMessage={recievedMessage}
             authUserMessage={authUserMessage}
-            newRoomCreation={newRoomCreation}/>
+            newRoomCreation={newRoomCreation}
+            newUserCreation={newUserCreation}/>
         </div>
     )
 }

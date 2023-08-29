@@ -20,7 +20,7 @@ const ChatList = (props) => {
             console.log(users)
         })
         .catch(err => console.log(err))
-    }, [props.DBroomData, props.newRoomCreation]); 
+    }, [props.DBroomData, props.newRoomCreation, props.newUserCreation]); 
     // when a chat from users list is clicked, the list should update its data from
     // the database so the created room (onclick) appears in that user (rooms) array
     // so the chatitem component of that specific user can use the (room._id)
@@ -41,7 +41,7 @@ const ChatList = (props) => {
         let isVisible = false;
         let updatedUsers = [...users]
         updatedUsers.forEach(user => {
-            isVisible = user.name.includes(value) || user.name.includes(value.toUpperCase()) ? true : false;
+            isVisible = user.name.toLowerCase().includes(value) || user.name.toUpperCase().includes(value) ? true : false;
             user.searchVisibility = isVisible;
         })
         setUsers(updatedUsers)
