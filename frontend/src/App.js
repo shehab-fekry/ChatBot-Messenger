@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Route, BrowserRouter, Routes} from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
@@ -13,10 +13,25 @@ function App() {
   let [token, setToken] = useState();
   let [user, setUser] = useState();
 
+  useEffect(() => {
+    let storedToken = localStorage.getItem('token')?.split(' ')[0];
+    let storedUser = {};
+    storedUser._id       = localStorage.getItem('userID');
+    storedUser.name      = localStorage.getItem('userName');
+    storedUser.imagePath = localStorage.getItem('imagePath');
+    storedUser.status    = localStorage.getItem('status');
+    setToken(storedToken);
+    setUser(storedUser);
+  }, [])
+
   const login = (user, token) => {
     setToken(token);
     setUser(user);
-    console.log({user, token});
+    localStorage.setItem('token', `${token} bearer`);
+    localStorage.setItem('userID', user._id);
+    localStorage.setItem('userName', user.name);
+    localStorage.setItem('imagePath', user.imagePath);
+    localStorage.setItem('status', user.status);
   }
 
   const logout = () => {
@@ -25,9 +40,9 @@ function App() {
     .then(result => {
       setToken(null);
       setUser({});
+      localStorage.clear();
     })
     .catch(err => console.log(err))
-    console.log({user, token});
   }
 
   let routes;
