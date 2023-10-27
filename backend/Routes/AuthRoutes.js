@@ -4,6 +4,21 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const Users = require('../Models/UsersM');
 
+// check if user exist before login
+app.post('/userExist', (req, res, next) => {
+    let email = req.body.email;
+    Users.findOne({email: email})
+    .then(user => {
+        if(!!user)
+        return res.json({name: user.name, imagePath: user.imagePath})
+        else
+        return res.json({message: 'No Such Bot Exist!'})
+    })
+    .catch(err => console.log(err))
+})
+
+
+
 app.post('/signin', (req, res, next) => {
     let {email, password} = req.body;
     let loginData = {};
@@ -29,6 +44,8 @@ app.post('/signin', (req, res, next) => {
     .catch(err => console.log(err))
 });
 
+
+
 app.post('/signup', (req, res, next) => {
     let {name, email, password, confirmPass, imagePath} = req.body;
 
@@ -41,6 +58,8 @@ app.post('/signup', (req, res, next) => {
     .catch(err => console.log(err))
 
 });
+
+
 
 app.post('/signout', (req, res, next) => {
     let userID = req.body.userID;
