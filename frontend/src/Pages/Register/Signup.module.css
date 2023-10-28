@@ -54,7 +54,15 @@
 
 
 
-
+.card {
+    /* padding: 20px 10px; */
+    /* border-radius: 10px; */
+    /* box-shadow: 0px 0px 10px #ccc; */
+    /* border: 1px solid blue; */
+    /* border-top: 2px solid #384850; */
+    /* border-bottom: 2px solid #384850; */
+    transition: 0.5 ease-in-out ;
+}
 
 
 .stepperForm {
@@ -82,6 +90,7 @@
     background-color: #a6a6a6;
     box-shadow: 0px 0px 2px #ccc;
     color: white;
+    overflow: hidden;
 }
 
 .firstHeaderText , .secondHeaderText, .thirdHeaderText {
@@ -99,7 +108,7 @@
 .firstBody , .secondBody, .thirdBody {
     display: flex;
     justify-content: left;
-    align-items: start;
+    align-items: flex-start;
     flex-flow: column;
     margin: 5px auto;
     margin-left: 15px;  
@@ -128,13 +137,19 @@
     padding: 10px 0px;
 }
 
-
-.firstInputComp img {
+.firstInputComp .image {
     width: 60px;
     height: 60px;
     background-color: #ccc;
     border-radius: 50%;
     margin-right: 10px;
+    overflow: hidden;
+}
+
+.firstInputComp .image img {
+    width: 100%;
+    height: 100%;
+    background-color: #ccc;
 }
 
 .thirdInputComp {
@@ -162,8 +177,9 @@ input {
     flex-flow: row;
     justify-content: space-evenly;
     align-items: center;
-    width: 370px;
+    width: 350px;
     /* border: 1px solid black; */
+    margin-left: -35px;
 }
 
 .ButtonSection button {
@@ -194,5 +210,5 @@ button.continue:hover {
 }
 
 button.back:hover {
-    background-color: #f8f8f8;
+    background-color: #ebebeb;
 }

@@ -59,17 +59,17 @@
 .startButton {
     display: none;
     padding: 9px 10px;
-    border-radius: 20px;
+    border-radius: 10px;
     font-size: 15px;
     font-weight: 700;
     background-color: white;
     color: #384850;
-    border: 2px solid #ffc107;
+    border: 2px solid #E5AD06;
     cursor: pointer;
 }
 
 .startButton:hover {
-    background-color: #ffc107;
+    background-color: #E5AD06;
     color: white;
 }
 
