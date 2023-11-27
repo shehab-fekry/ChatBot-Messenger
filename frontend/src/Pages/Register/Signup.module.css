@@ -116,7 +116,7 @@
     padding-left: 25px;
     /* min-height: 50px; */
     border-left: 2px solid #a6a6a6;
-    overflow: hidden;
+    /* overflow: hidden; */
     transition: 0.3s ease-in-out;
 }
 
@@ -157,6 +157,7 @@
     flex-flow: column;
     justify-content: left;
     /* padding: 10px 0px; */
+    margin-bottom: 10px;
 }
 
 .thirdInputComp input {
@@ -179,7 +180,7 @@ input {
     align-items: center;
     width: 350px;
     /* border: 1px solid black; */
-    margin-left: -35px;
+    margin-left: -20px;
 }
 
 .ButtonSection button {
@@ -198,7 +199,7 @@ button.continue {
 }
 
 button.back {
-    background-color:unset;
+    background-color: #ebebeb;
     color: #384850;
     font-size: 18px;
     font-weight: 500;
@@ -210,5 +211,59 @@ button.continue:hover {
 }
 
 button.back:hover {
-    background-color: #ebebeb;
+    background-color: #e1e1e1;
+}
+
+.Signup a {
+    position: relative;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 2px;
+    /* background-color: #efefef; */
+    color: #ada8a8;
+    opacity: 0.9;
+}
+
+
+
+.Signup a::before {
+    content: '❯';
+    position: absolute;
+    left: 0px;
+    margin-left: 55px;
+    width: 45%;
+    height: 95%;
+    background-color: #ada8a8;
+    color: white;
+    border-radius: 50%;
+    /* opacity: 0; */
+    z-index: -1;
+}
+
+.Signup a:hover {
+    color: #384850;
+}
+
+.Signup a:hover::before {
+    /* transition: background-color 250ms ease-in-out; */
+    background-color: #e5ad06;
+}
+
+.Signup .errorMessage {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #ff3333;
+    padding: 2px 7px;
+    padding-bottom: 3px;
+    border-radius: 20px;
+    color: white;
+    /* opacity: 0.7; */
+    border: none;
+}
+
+.Signup .errorMessage .warning {
+    margin-right: 5px;
+    margin-top: 2px;
 }
