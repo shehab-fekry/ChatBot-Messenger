@@ -8,7 +8,7 @@ const Message = (props) => {
     return (
         <div className={style.Message} 
         style={{
-            backgroundColor: props.message.creatorID == props.auth ? '#edb100' : '#384850',
+            backgroundColor: props.message.creatorID == props.auth ? '#FCE883' : '#efefef',
             alignSelf: props.message.creatorID == props.auth ? 'flex-end' : 'flex-start',
             borderTopLeftRadius: props.message.creatorID == props.auth ? '20px' : '0px',
             borderTopRightRadius: props.message.creatorID == props.auth ? '0px' : '20px',

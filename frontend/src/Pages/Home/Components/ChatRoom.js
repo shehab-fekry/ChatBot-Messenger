@@ -127,7 +127,7 @@ const ChatRoom = (props) => {
                 </div>
                 <div className={style.toggleButton}>
                 <FontAwesomeIcon icon={faBars} 
-                style={{fontSize: '35px', cursor: 'pointer', color: '#333'}}
+                style={{fontSize: '35px', cursor: 'pointer', color: '#384850'}}
                 onClick={props.toggleHandler}/>
                 </div>
             </div>
@@ -159,7 +159,9 @@ const ChatRoom = (props) => {
                     </div>
                     <div className={style.ButtonSide}>
                         <div className={style.buttonBackground} 
-                        style={{background: newMessage ? '#333' : '#b3b3b3'}} 
+                        style={{
+                            background: newMessage ? '#384850' : '#ccc',
+                        }} 
                         onClick={newMessage ? sendMessageHandler : null}>
                             <FontAwesomeIcon
                             icon={faPaperPlane}
