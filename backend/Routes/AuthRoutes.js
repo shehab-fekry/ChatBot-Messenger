@@ -3,6 +3,8 @@ const app = express();
 
 const jwt = require('jsonwebtoken');
 const Users = require('../Models/UsersM');
+let { validationResult } = require('express-validator');
+const valid = require('../Validation/Validation');
 
 // check if user exist before login
 app.post('/userExist', (req, res, next) => {
@@ -46,18 +48,29 @@ app.post('/signin', (req, res, next) => {
 
 
 
-app.post('/signup', (req, res, next) => {
+const validation = [valid.Name, valid.Email, valid.Password, valid.confirmPassword]
+
+app.post('/signup', validation ,(req, res, next) => {
     let {name, email, password, confirmPass, imagePath} = req.body;
 
-    let user = new Users({name, email, password, imagePath: `https://robohash.org/${name}`});
-    user.save()
-    .then(() => {
-        app.get("socketService").emiter('recieve-user-creation', true);
-        res.json({messsage: 'User Created Successfully'});
-    })
-    .catch(err => console.log(err))
+    // express-validator (2)
+    let errors = validationResult(req).array();
+    let errorArray=[];
+    errors.forEach(err => errorArray.push(err.msg))
 
+    if(!errors){
+        let user = new Users({name, email, password, imagePath: `https://robohash.org/${name}`});
+        user.save()
+        .then(() => {
+            app.get("socketService").emiter('recieve-user-creation', true);
+            res.json({messsage: 'User Created Successfully'});
+        })
+        .catch(err => console.log(err))
+    } 
+    else
+        return res.json({message: errorArray})
 });
+
 
 
 

@@ -176,7 +176,7 @@ const Signin = () => {
                 <form className={style.stepperForm}>
                     <div className={style.firstHeader}>
                         <div className={style.firstHeaderBuble} 
-                        style={{background: step <= 2 && !state.inputs.Name.error ? '#E5AD06' : (state.inputs.Name.error ? 'red' : '#a6a6a6')}}>
+                        style={{background: step <= 2 && !state.inputs.Name.error ? '#E5AD06' : (state.inputs.Name.error ? '#ff3333' : '#a6a6a6')}}>
                             {avatar ? <img width='100%' height='100%' src={'https://robohash.org/' + avatar}/> : '1'}
                         </div>
                         <div className={style.firstHeaderText} style={{color: step === 0 ? '#384850' : '#a6a6a6'}}>
@@ -207,7 +207,7 @@ const Signin = () => {
                     </div>
 
                     <div className={style.secondHeader}>
-                        <div className={style.secondHeaderBuble} style={{background: step >= 1 && !state.inputs.Email.error ? '#E5AD06' : (state.inputs.Email.error ? 'red' : '#a6a6a6')}}>{email ? '@' : '2'}</div>
+                        <div className={style.secondHeaderBuble} style={{background: step >= 1 && !state.inputs.Email.error ? '#E5AD06' : (state.inputs.Email.error ? '#ff3333' : '#a6a6a6')}}>{email ? '@' : '2'}</div>
                         <div className={style.secondHeaderText} style={{color: step === 1 ? '#384850' : '#a6a6a6'}}>{email ? email : 'Email'}</div>
                     </div>
                     <div className={style.secondBody}
@@ -230,7 +230,7 @@ const Signin = () => {
                     </div>
 
                     <div className={style.thirdHeader}>
-                        <div className={style.thirdHeaderBuble} style={{background: step === 2 && !state.inputs.Password.error ? '#E5AD06' : (state.inputs.Password.error ? 'red' : '#a6a6a6')}}>3</div>
+                        <div className={style.thirdHeaderBuble} style={{background: step === 2 && !state.inputs.Password.error ? '#E5AD06' : (state.inputs.Password.error ? '#ff3333' : '#a6a6a6')}}>3</div>
                         <div className={style.thirdHeaderText} style={{color: step === 2 ? '#384850' : '#a6a6a6'}}>Password</div>
                     </div>
                     <div className={style.thirdBody}
